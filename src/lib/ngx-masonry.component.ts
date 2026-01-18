@@ -1,8 +1,8 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnDestroy, OnInit, Output, PLATFORM_ID, SimpleChanges, inject } from '@angular/core';
 import { NgxMasonryOptions } from './ngx-masonry-options';
 import { NgxMasonryDirective } from './ngx-masonry.directive';
-import Masonry from 'masonry-layout';
+declare let Masonry: any;
 
 @Component({
   selector: '[ngx-masonry], ngx-masonry',
@@ -13,15 +13,24 @@ import Masonry from 'masonry-layout';
 			display: block;
 		}
 	`
-  ]
+  ],
+  standalone: false,
 })
 export class NgxMasonryComponent implements OnInit, OnChanges, OnDestroy {
-  constructor(@Inject(PLATFORM_ID) private platformId: any, private _element: ElementRef) {}
+
+  // constructor(
+  //   @Inject(PLATFORM_ID) private platformId: Object,
+  //   private _element: ElementRef<HTMLElement>
+  // ) {}
+  private platformId = inject(PLATFORM_ID);
+  constructor(
+    private _element: ElementRef
+  ) {}
 
   public masonryInstance: any;
 
   // Inputs
-  @Input() public options: NgxMasonryOptions;
+  @Input() public options: NgxMasonryOptions = {};
   @Input() updateLayout = false;
   @Input() ordered = false;
 
@@ -30,10 +39,9 @@ export class NgxMasonryComponent implements OnInit, OnChanges, OnDestroy {
   @Output() removeComplete: EventEmitter<any[]> = new EventEmitter<any[]>();
   @Output() itemsLoaded: EventEmitter<number> = new EventEmitter<number>();
 
-  private pendingItems = [];
+  private pendingItems: any = [];
 
   ngOnInit() {
-
     // Create masonry options object
     if (!this.options) {
       this.options = {};

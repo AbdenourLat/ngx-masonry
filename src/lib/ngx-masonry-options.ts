@@ -14,6 +14,7 @@ export interface NgxMasonryOptions {
   initLayout?: boolean;
   horizontalOrder?: boolean;
   animations?: NgxMasonryAnimations;
+  transitionDuration?: number | string;
 }
 
 export interface NgxMasonryAnimations {
